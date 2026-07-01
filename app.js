@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function () {
     wizardStep = 0;
     conciergeText.innerText = `"Welcome to Cartinus. I am your digital steward. May I assist in curating your ideal sanctuary stay?"`;
     conciergeOptions.innerHTML = `
-      <button onclick="startConciergeWizard()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-gold text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md">
+      <button onclick="startConciergeWizard()" class="w-full py-2.5 rounded-full btn-solid-dark text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md">
         Curate My Stay &rarr;
       </button>
     `;
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     conciergeText.innerText = `"Your curated package is ready. Ocean Suite + ${conciergeChosenDining} + Geothermal Bath. Shall we secure this in the ledger?"`;
     conciergeOptions.innerHTML = `
-      <button onclick="triggerConciergeCompletion()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-gold text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md btn-gold-sweep">Secure Ledger Reservation</button>
+      <button onclick="triggerConciergeCompletion()" class="w-full py-2.5 rounded-full btn-solid-dark text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md btn-gold-sweep">Secure Ledger Reservation</button>
       <button onclick="resetConciergeDialog()" class="w-full py-1.5 text-[9px] uppercase tracking-widest font-light text-rose-400 hover:underline cursor-pointer">Restart Curation</button>
     `;
     hookCursorMicroInteractions();
@@ -1175,6 +1175,11 @@ document.addEventListener('DOMContentLoaded', function () {
         alert("Please select your check-in arrival date.");
         return;
       }
+      const todayCheckStr = new Date().toISOString().split('T')[0];
+      if (dateVal < todayCheckStr) {
+        alert("Please select a check-in date that is today or later.");
+        return;
+      }
       currentFormStep = 2;
       updateStepperUI();
     } else if (currentFormStep === 2) {
@@ -1346,9 +1351,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (prefilledExperience) {
       bookingExperienceSelect.value = prefilledExperience;
     }
+    const todayStr = new Date().toISOString().split('T')[0];
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('booking-date').value = tomorrow.toISOString().split('T')[0];
+    const bookingDateInput = document.getElementById('booking-date');
+    bookingDateInput.min = todayStr;
+    bookingDateInput.value = tomorrow.toISOString().split('T')[0];
 
     clientBookingDrawer.classList.remove('hidden');
     setTimeout(() => {
