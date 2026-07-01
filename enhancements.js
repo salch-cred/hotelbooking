@@ -121,3 +121,106 @@
   } catch (e) {}
 
 })();
+
+(function () {
+  'use strict';
+
+  var OVERLAY_IDS = ['mobile-drawer', 'booking-drawer', 'detail-modal', 'dish-modal'];
+
+  function anyOverlayVisible() {
+    for (var i = 0; i < OVERLAY_IDS.length; i++) {
+      var el = document.getElementById(OVERLAY_IDS[i]);
+      if (el && !el.classList.contains('hidden')) return true;
+    }
+    return false;
+  }
+
+  function syncOverlayState() {
+    document.body.classList.toggle('overlay-open', anyOverlayVisible());
+  }
+
+  // 6. Fix: reliably keep the fixed header from ever visually overlapping
+  // or being clickable through an open drawer/modal, regardless of which
+  // app.js function triggered the open/close. This watches each overlay's
+  // class attribute directly instead of hooking every open/close function.
+  try {
+    OVERLAY_IDS.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var observer = new MutationObserver(syncOverlayState);
+      observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+    });
+    syncOverlayState();
+  } catch (e) {}
+
+  // 7. Escape key closes whichever overlay is currently open.
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    try {
+      var mobileDrawer = document.getElementById('mobile-drawer');
+      if (mobileDrawer && !mobileDrawer.classList.contains('hidden') && typeof window.closeMobileDrawer === 'function') {
+        window.closeMobileDrawer();
+      }
+      var bookingDrawer = document.getElementById('booking-drawer');
+      var closeBookingBtn = document.getElementById('close-booking-btn');
+      if (bookingDrawer && !bookingDrawer.classList.contains('hidden') && closeBookingBtn) closeBookingBtn.click();
+      var detailModal = document.getElementById('detail-modal');
+      var closeDetailBtn = document.getElementById('close-detail-btn');
+      if (detailModal && !detailModal.classList.contains('hidden') && closeDetailBtn) closeDetailBtn.click();
+      var dishModal = document.getElementById('dish-modal');
+      var closeDishBtn = document.getElementById('close-dish-btn');
+      if (dishModal && !dishModal.classList.contains('hidden') && closeDishBtn) closeDishBtn.click();
+    } catch (err) {}
+  });
+
+  // 8. If the window is resized up to desktop width while the mobile drawer
+  // is open, close it automatically so it can never get stuck open behind
+  // (or on top of) the desktop nav.
+  window.addEventListener('resize', function () {
+    try {
+      if (window.innerWidth >= 768) {
+        var mobileDrawer = document.getElementById('mobile-drawer');
+        if (mobileDrawer && !mobileDrawer.classList.contains('hidden') && typeof window.closeMobileDrawer === 'function') {
+          window.closeMobileDrawer();
+        }
+      }
+    } catch (e) {}
+  });
+
+  // 9. Header gains a soft shadow once the page scrolls (visual polish).
+  try {
+    var headerEl = document.querySelector('header');
+    function syncHeaderScroll() {
+      if (!headerEl) return;
+      headerEl.classList.toggle('header-scrolled', window.scrollY > 10);
+    }
+    window.addEventListener('scroll', syncHeaderScroll, { passive: true });
+    syncHeaderScroll();
+  } catch (e) {}
+
+  // 10. Active-page nav highlight (scrollspy) across desktop + mobile nav links.
+  try {
+    var sectionIds = ['hero', 'sanctuaries', 'atelier', 'architect'];
+    function clearActiveLinks() {
+      document.querySelectorAll('.nav-link-active').forEach(function (a) {
+        a.classList.remove('nav-link-active');
+      });
+    }
+    function setActiveSection(id) {
+      clearActiveLinks();
+      document.querySelectorAll('a[href="#' + id + '"]').forEach(function (a) {
+        a.classList.add('nav-link-active');
+      });
+    }
+    var sectionEls = sectionIds.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    if (sectionEls.length && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        var visible = entries.filter(function (en) { return en.isIntersecting; })
+          .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; });
+        if (visible.length) setActiveSection(visible[0].target.id);
+      }, { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
+      sectionEls.forEach(function (el) { io.observe(el); });
+    }
+  } catch (e) {}
+
+})();
