@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const contentBox = archTabContents[key];
 
       if (key === activeKey) {
-        headerBtn.className = "pb-3 text-[10px] tracking-widest uppercase font-medium text-ivory-dark dark:text-white border-b-2 border-ivory-gold px-4 transition-all cursor-pointer";
+        headerBtn.className = "pb-3 text-[10px] tracking-widest uppercase font-medium text-ivory-dark dark:tex t-white border-b-2 border-ivory-gold px-4 transition-all cursor-pointer";
         contentBox.classList.remove('hidden');
         contentBox.classList.add('block');
       } else {
@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function () {
     wizardStep = 0;
     conciergeText.innerText = `"Welcome to Cartinus. I am your digital steward. May I assist in curating your ideal sanctuary stay?"`;
     conciergeOptions.innerHTML = `
-      <button onclick="startConciergeWizard()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-gold text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md">
+      <button onclick="startConciergeWizard()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-g old text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md">
         Curate My Stay &rarr;
       </button>
     `;
@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function () {
     conciergeText.innerText = `"Your curated package is ready. Ocean Suite + ${conciergeChosenDining} + Geothermal Bath. Shall we secure this in the ledger?"`;
     conciergeOptions.innerHTML = `
       <button onclick="triggerConciergeCompletion()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-gold text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md btn-gold-sweep">Secure Ledger Reservation</button>
-      <button onclick="resetConciergeDialog()" class="w-full py-1.5 text-[9px] uppercase tracking-widest font-light text-rose-400 hover:underline cursor-pointer">Restart Curation</button>
+      <button onclick=" resetConciergeDialog()" class="w-full py-1.5 text-[9px] uppercase tracking-widest font-light text-rose-400 hover:underline cursor-pointer">Restart Curation</button>
     `;
     hookCursorMicroInteractions();
   };
@@ -785,7 +785,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       actionsHtml += `
         <button onclick="deleteBooking('${b.id}')" class="p-1.5 rounded-lg border border-zinc-500/30 text-zinc-500 hover:bg-zinc-500/10 hover:text-zinc-800 transition-colors cursor-pointer" title="Delete Permanent">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478 -.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
         </button>
       `;
 
@@ -888,7 +888,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.setAttribute("href", url);
+ 
+     link.setAttribute("href", url);
       link.setAttribute("download", "cartinus_master_ledger.csv");
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
@@ -1101,6 +1102,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (lineNum < currentFormStep) {
         line.className = "w-10 h-[1.5px] bg-ivory-gold flex-1 mx-3";
       } else {
+
         line.className = "w-10 h-[1.5px] bg-ivory-border dark:bg-[#222522] flex-1 mx-3";
       }
     });
@@ -1208,7 +1210,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
-  // ==========================================
+  // ======================================== ====
   // 21. CLIENT INTERACTIVE SCROLL & TABS
   // ==========================================
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -1317,7 +1319,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 300);
   };
 
-  if (closeBookingBtn) closeBookingBtn.addEventListener('click', closeBookingModal);
+  if (close BookingBtn) closeBookingBtn.addEventListener('click', closeBookingModal);
   if (bookingBackdrop) bookingBackdrop.addEventListener('click', closeBookingModal);
 
   const closeSuccessBtn = document.getElementById('close-success-btn');
@@ -1511,4 +1513,10 @@ document.addEventListener('DOMContentLoaded', function () {
   updateAdminStats();
   renderBookingsTable();
 
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  var s = document.createElement('script');
+  s.src = 'enhancements.js';
+  document.body.appendChild(s);
 });
