@@ -79,12 +79,6 @@ img, video, svg {
   border-radius: 50% 50% 50% 0;
 }
 
-/* Glassmorphism */
-.glass-header {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
 .luxury-card-shadow {
   box-shadow: 0 20px 40px -15px rgba(26, 26, 26, 0.04);
 }
