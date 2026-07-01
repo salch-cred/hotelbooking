@@ -224,3 +224,45 @@
   } catch (e) {}
 
 })();
+
+(function () {
+  'use strict';
+
+  // 11. Graceful branded fallback for any photograph that fails to load.
+  // Replaces the browser's plain grey "broken image" box with an elegant
+  // on-brand placeholder so a failed or slow photo never breaks the layout.
+  try {
+    var FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232A2A27'/%3E%3Cstop offset='100%25' stop-color='%23141514'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23g)'/%3E%3Ctext x='400' y='320' font-family='Georgia,serif' font-size='120' fill='%23C5A880' fill-opacity='0.55' text-anchor='middle'%3EC%3C/text%3E%3Ctext x='400' y='380' font-family='Arial,sans-serif' font-size='16' letter-spacing='6' fill='%23C5A880' fill-opacity='0.4' text-anchor='middle'%3ECARTINUS%3C/text%3E%3C/svg%3E";
+
+    document.addEventListener('error', function (e) {
+      var target = e.target;
+      if (target && target.tagName === 'IMG' && target.src.indexOf('data:image/svg+xml') !== 0) {
+        target.src = FALLBACK_IMG;
+        target.classList.add('img-fallback-active');
+      }
+    }, true);
+  } catch (e) {}
+
+  // 12. Floating "back to top" button for the long client-facing page.
+  try {
+    var backToTop = document.createElement('button');
+    backToTop.id = 'back-to-top';
+    backToTop.setAttribute('aria-label', 'Back to top');
+    backToTop.title = 'Back to top';
+    backToTop.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>';
+    document.body.appendChild(backToTop);
+
+    backToTop.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    function syncBackToTop() {
+      var clientView = document.getElementById('client-view');
+      var isClientVisible = clientView && !clientView.classList.contains('hidden');
+      backToTop.classList.toggle('visible', isClientVisible && window.scrollY > 500);
+    }
+    window.addEventListener('scroll', syncBackToTop, { passive: true });
+    syncBackToTop();
+  } catch (e) {}
+
+})();
