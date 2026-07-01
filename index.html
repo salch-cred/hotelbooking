@@ -12,6 +12,27 @@ crossorigin="anonymous"
 ></script>
 <style type="text/tailwindcss">
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Jost", sans-serif;
+
+  --color-ivory-bg: #F8F7F4;
+  --color-ivory-card: #FFFFFF;
+  --color-ivory-dark: #1A1A1A;
+  --color-ivory-muted: #767571;
+  --color-ivory-gold: #C5A880;
+  --color-ivory-gold-light: #DFC9A3;
+  --color-ivory-border: rgba(26, 26, 26, 0.08);
+
+  --color-evening-bg: #0D0F0E;
+  --color-evening-card: #161A18;
+  --color-evening-text: #ECECE7;
+  --color-evening-muted: #8E9890;
+  --color-evening-gold: #CBB07E;
+  --color-evening-gold-light: #DFC9A3;
+  --color-evening-border: rgba(236, 236, 231, 0.06);
+}
 </style>
 <script>
 // System-wide Dark Mode Auto Detection & Sync
@@ -137,7 +158,7 @@ Refined Spaces,<br>Unrivaled Luxury
 <p id="hero-desc" class="text-xs md:text-sm text-white/80 font-light leading-relaxed max-w-xl">
 Welcome to Cartinus. We combine high-end architecture with customized hospitality, presenting spectacular living suites and Michelin-inspired dining atmospheres nestled inside mist-shrouded valleys.
 </p>
-<div class="bg-black/65 p-6 rounded-[2.5rem] border border-white/15 shadow-2xl space-y-5 max-w-2xl w-full text-left">
+<div class="planner-card p-6 rounded-[2.5rem] shadow-2xl space-y-5 max-w-2xl w-full text-left">
 <div class="flex items-center justify-between border-b border-white/15 pb-3">
 <span class="text-[9px] uppercase tracking-widest text-ivory-gold dark:text-evening-gold font-bold">Curated Sanctuary Planner</span>
 <span class="text-[10px] text-white/60 font-light">Bespoke Experience Customizer</span>
@@ -145,7 +166,7 @@ Welcome to Cartinus. We combine high-end architecture with customized hospitalit
 <div class="grid grid-cols-3 gap-3 text-xs">
 <div class="space-y-1">
 <label class="text-[8px] uppercase tracking-widest text-white/70 font-semibold">Select Suite</label>
-<select id="plan-suite" class="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-2.5 text-[10px] focus:outline-none focus:border-ivory-gold cursor-pointer text-white" onchange="updatePlannerSummary()">
+<select id="plan-suite" class="planner-field w-full rounded-xl px-2 py-2.5 text-[10px] focus:outline-none focus:border-ivory-gold cursor-pointer" onchange="updatePlannerSummary()">
 <option value="The Ocean Sanctuary" selected>Ocean Observatory</option>
 <option value="The Emerald Chamber">Emerald Chamber</option>
 <option value="The Epicurean Atrium">Epicurean Atrium</option>
@@ -153,7 +174,7 @@ Welcome to Cartinus. We combine high-end architecture with customized hospitalit
 </div>
 <div class="space-y-1">
 <label class="text-[8px] uppercase tracking-widest text-white/70 font-semibold">Gastronomy</label>
-<select id="plan-dining" class="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-2.5 text-[10px] focus:outline-none focus:border-ivory-gold cursor-pointer text-white" onchange="updatePlannerSummary()">
+<select id="plan-dining" class="planner-field w-full rounded-xl px-2 py-2.5 text-[10px] focus:outline-none focus:border-ivory-gold cursor-pointer" onchange="updatePlannerSummary()">
 <option value="Tasting" selected>Seasonal Tasting</option>
 <option value="Wine">Cellar Flight</option>
 <option value="None">No Dining Plan</option>
@@ -161,18 +182,18 @@ Welcome to Cartinus. We combine high-end architecture with customized hospitalit
 </div>
 <div class="space-y-1">
 <label class="text-[8px] uppercase tracking-widest text-white/70 font-semibold">Spa Ceremony</label>
-<select id="plan-spa" class="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-2.5 text-[10px] focus:outline-none focus:border-ivory-gold cursor-pointer text-white" onchange="updatePlannerSummary()">
+<select id="plan-spa" class="planner-field w-full rounded-xl px-2 py-2.5 text-[10px] focus:outline-none focus:border-ivory-gold cursor-pointer" onchange="updatePlannerSummary()">
 <option value="Yes" selected>Hot Springs Ritual</option>
 <option value="No">No Spa Ritual</option>
 </select>
 </div>
 </div>
-<div class="bg-black/35 px-4 py-3 rounded-xl border border-white/10 flex items-center justify-between flex-wrap gap-2">
+<div class="planner-summary px-4 py-3 rounded-xl flex items-center justify-between flex-wrap gap-2">
 <div class="text-[10px]">
 <div class="font-medium text-white" id="plan-summary-label">Ocean Suite + Tasting + Spa</div>
 <div class="text-white/60 font-light mt-0.5" id="plan-summary-price">Est. Investment: $955 / Night</div>
 </div>
-<button onclick="triggerPlannerBooking()" class="bg-white text-ivory-dark hover:bg-ivory-gold hover:text-white text-[9px] uppercase tracking-widest px-5 py-2.5 rounded-full transition-all font-medium cursor-pointer shadow-md">
+<button onclick="triggerPlannerBooking()" class="btn-solid-light text-[9px] uppercase tracking-widest px-5 py-2.5 rounded-full transition-all font-medium cursor-pointer shadow-md">
 Reserve Stay
 </button>
 </div>
@@ -898,124 +919,4 @@ Secure SHA-256 cloud encryption. Refined luxury hospitality is managed sustainab
 <span>&larr; Drag Left or Right to Pan 360° &rarr;</span>
 </div>
 </div>
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
-<div class="absolute bottom-6 left-8 text-white pointer-events-none">
-<span id="detail-category" class="text-[10px] tracking-[0.3em] uppercase text-ivory-gold-light">Sanctuary Offering</span>
-<h3 id="detail-title" class="font-serif text-3xl font-light">Suite Title</h3>
-</div>
-</div>
-<div class="p-8 space-y-6">
-<p id="detail-desc" class="text-xs md:text-sm text-ivory-muted dark:text-[#8E9890] font-light leading-relaxed">
-Detailed description of the suite or room goes here.
-</p>
-<div class="grid grid-cols-2 gap-4 border-t border-b border-ivory-border dark:border-[#222522] py-6 text-ivory-dark dark:text-white">
-<div class="flex items-center space-x-3">
-<span class="text-ivory-gold dark:text-evening-gold text-lg">✦</span>
-<span id="detail-feat1" class="text-xs font-light">Highlight Feature 1</span>
-</div>
-<div class="flex items-center space-x-3">
-<span class="text-ivory-gold dark:text-evening-gold text-lg">✦</span>
-<span id="detail-feat2" class="text-xs font-light">Highlight Feature 2</span>
-</div>
-<div class="flex items-center space-x-3">
-<span class="text-ivory-gold dark:text-evening-gold text-lg">✦</span>
-<span id="detail-feat3" class="text-xs font-light">Highlight Feature 3</span>
-</div>
-<div class="flex items-center space-x-3">
-<span class="text-ivory-gold dark:text-evening-gold text-lg">✦</span>
-<span id="detail-feat4" class="text-xs font-light">Highlight Feature 4</span>
-</div>
-</div>
-<div class="flex items-center justify-between pt-2">
-<div>
-<span class="text-[9px] tracking-widest uppercase text-ivory-muted dark:text-[#8E9890]">Standard Rate</span>
-<div id="detail-rate" class="text-lg font-light tracking-wide text-ivory-dark dark:text-white">$350 / night</div>
-</div>
-<div class="flex space-x-4">
-<button id="detail-close-action-btn" class="px-6 py-3 rounded-full border border-ivory-border dark:border-[#222522] hover:bg-ivory-bg dark:hover:bg-[#090A09] text-xs tracking-widest uppercase font-light transition-colors text-ivory-dark dark:text-white cursor-pointer">
-Cancel
-</button>
-<button id="detail-book-action-btn" class="px-8 py-3 rounded-full bg-ivory-dark hover:bg-ivory-gold hover:text-white text-white text-xs tracking-widest uppercase font-light transition-all shadow-md cursor-pointer">
-Reserve Space
-</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="dish-modal" class="fixed inset-0 z-50 bg-black/75 hidden items-center justify-center p-6">
-<div id="dish-backdrop" class="absolute inset-0"></div>
-<div class="relative bg-ivory-card dark:bg-[#141514] rounded-[2.5rem] max-w-xl w-full border border-ivory-border dark:border-[#222522] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300">
-<button id="close-dish-btn" class="absolute top-6 right-6 z-10 p-2 rounded-full bg-black/40 hover:bg-black/60 border border-white/20 text-white transition-all cursor-pointer">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-</svg>
-</button>
-<div class="h-56 relative overflow-hidden">
-<img id="dish-detail-img" src="" alt="Gourmet Dish Detail" class="w-full h-full object-cover">
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-<div class="absolute bottom-6 left-8 text-white">
-<span class="text-[9px] tracking-[0.3em] uppercase text-ivory-gold-light">Gastronomy Atelier Portfolio</span>
-<h3 id="dish-detail-title" class="font-serif text-2xl md:text-3xl font-light">Dish Title</h3>
-</div>
-</div>
-<div class="p-8 space-y-6 text-xs md:text-sm text-ivory-muted dark:text-[#8E9890] font-light leading-relaxed">
-<p id="dish-detail-desc"></p>
-<div class="grid grid-cols-2 gap-4 border-t border-b border-ivory-border dark:border-[#222522] py-4">
-<div>
-<span class="text-[8px] uppercase tracking-widest text-ivory-muted font-bold block mb-1">Key Ingredients</span>
-<span id="dish-detail-ingredients" class="text-ivory-dark dark:text-white font-light"></span>
-</div>
-<div>
-<span class="text-[8px] uppercase tracking-widest text-ivory-muted font-bold block mb-1">Sommelier Wine Pairing</span>
-<span id="dish-detail-pairing" class="text-ivory-gold font-light"></span>
-</div>
-</div>
-<div class="bg-ivory-bg/50 dark:bg-[#090A09] p-4 rounded-xl border border-ivory-border/50 dark:border-[#222522] text-[11px] italic text-ivory-dark dark:text-white text-center">
-<span id="dish-detail-quote"></span>
-</div>
-<div class="flex justify-end pt-2">
-<button id="close-dish-action-btn" class="px-8 py-3 rounded-full bg-ivory-dark text-white text-xs tracking-widest uppercase font-light transition-all btn-gold-sweep cursor-pointer">
-Return to Atelier
-</button>
-</div>
-</div>
-</div>
-</div>
-<div class="fixed bottom-6 right-6 z-40 flex flex-col items-end space-y-4">
-<div id="concierge-window" class="bg-ivory-card dark:bg-[#141514] rounded-[2.5rem] border border-ivory-border dark:border-[#222522] shadow-2xl p-6 w-80 max-w-sm flex flex-col space-y-4 transition-all duration-500 scale-0 origin-bottom-right opacity-0 pointer-events-none mb-2">
-<div class="flex items-center justify-between border-b border-ivory-border dark:border-[#222522] pb-3">
-<div class="flex items-center space-x-2.5">
-<div class="w-8 h-8 rounded-full bg-ivory-dark text-ivory-gold flex items-center justify-center font-serif text-xs border border-white/20 select-none">C</div>
-<div>
-<h4 class="font-serif text-sm font-medium text-ivory-dark dark:text-white">Personal Concierge</h4>
-<span class="text-[8px] uppercase tracking-widest text-emerald-500 font-semibold block">Online & Attentive</span>
-</div>
-</div>
-<button id="close-concierge-btn" class="p-1 rounded-full hover:bg-ivory-bg dark:hover:bg-[#090A09] cursor-pointer text-ivory-muted transition-colors">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-</svg>
-</button>
-</div>
-<div id="concierge-prompt-box" class="text-xs text-ivory-muted dark:text-[#8E9890] leading-relaxed min-h-24 flex flex-col justify-center text-center p-2 font-light">
-<p id="concierge-text">"Welcome to Cartinus. I am your digital steward. May I assist in curating your ideal sanctuary stay?"</p>
-</div>
-<div id="concierge-options" class="flex flex-col space-y-2">
-<button onclick="startConciergeWizard()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-gold text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md">
-Curate My Stay &rarr;
-</button>
-</div>
-</div>
-<button id="concierge-toggle-btn" class="w-14 h-14 rounded-full bg-ivory-dark text-ivory-gold flex items-center justify-center border border-white/10 hover:border-ivory-gold/40 shadow-2xl select-none relative transition-all active:scale-95 hover:scale-105 duration-300 cursor-pointer" title="Consult Personal Concierge">
-<svg class="w-6 h-6 animate-[bounce-slow_3s_infinite]" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24">
-<path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-</svg>
-<span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border border-white dark:border-zinc-950 rounded-full animate-ping"></span>
-</button>
-</div>
-<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-3 max-w-sm w-full pointer-events-none">
-</div>
-<script src="app.js"></script>
-</body>
-</html>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-trans
