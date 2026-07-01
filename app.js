@@ -41,6 +41,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   // ==========================================
+  // 1.5 OVERLAY MUTUAL-EXCLUSION HELPER
+  // ==========================================
+  // Guarantees only one full-screen overlay (booking drawer, room detail
+  // modal, or dish modal) is ever visible at once. Without this, triggering
+  // a second overlay before the first one finished closing could leave both
+  // visible at the same time, causing their content to visually overlap.
+  function closeAllOverlayPanels(exceptId) {
+    const overlayConfigs = [
+      { id: 'booking-drawer', hideClass: 'translate-x-full', showClass: 'translate-x-0' },
+      { id: 'detail-modal', hideClass: 'scale-95', showClass: 'scale-100' },
+      { id: 'dish-modal', hideClass: 'scale-95', showClass: 'scale-100' }
+    ];
+
+    overlayConfigs.forEach(cfg => {
+      if (cfg.id === exceptId) return;
+      const overlayEl = document.getElementById(cfg.id);
+      if (!overlayEl || overlayEl.classList.contains('hidden')) return;
+
+      const inner = overlayEl.querySelector('.relative');
+      if (inner) {
+        inner.classList.add(cfg.hideClass);
+        inner.classList.remove(cfg.showClass);
+      }
+      overlayEl.classList.add('hidden');
+      overlayEl.classList.remove('flex');
+    });
+  }
+
+
+  // ==========================================
   // 2. LUXURY PRELOADER TIMELINE
   // ==========================================
   const preloader = document.getElementById('preloader');
@@ -395,6 +425,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const data = michelinDishData[dishKey];
     if (!data) return;
 
+    closeAllOverlayPanels('dish-modal');
+    document.body.classList.add('overlay-open');
+
     dishDetailImg.src = data.image;
     dishDetailTitle.innerText = data.title;
     dishDetailDesc.innerText = data.desc;
@@ -413,6 +446,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.closeDishDetail = function() {
     dishModal.querySelector('.relative').classList.add('scale-95');
     dishModal.querySelector('.relative').classList.remove('scale-100');
+    document.body.classList.remove('overlay-open');
     setTimeout(() => {
       dishModal.classList.add('hidden');
       dishModal.classList.remove('flex');
@@ -1306,6 +1340,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const bookingBackdrop = document.getElementById('booking-backdrop');
 
   window.openBookingModal = function (prefilledExperience = '') {
+    closeAllOverlayPanels('booking-drawer');
+    document.body.classList.add('overlay-open');
+
     if (prefilledExperience) {
       bookingExperienceSelect.value = prefilledExperience;
     }
@@ -1321,6 +1358,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   window.closeBookingModal = function () {
     clientBookingDrawer.querySelector('.relative').classList.add('translate-x-full');
+    document.body.classList.remove('overlay-open');
     setTimeout(() => {
       clientBookingDrawer.classList.add('hidden');
     }, 300);
@@ -1407,6 +1445,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const data = cardData[cardKey];
     if (!data) return;
 
+    closeAllOverlayPanels('detail-modal');
+    document.body.classList.add('overlay-open');
+
     activeModalOffering = data.title;
     activeModalPanImage = data.panorama;
 
@@ -1466,64 +1507,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (detailPanoramaViewport) {
     detailPanoramaViewport.addEventListener('mousedown', (e) => {
-      isDraggingPanorama = true;
-      startDragX = e.clientX;
-      startBgPosPercent = currentBgPosPercent;
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isDraggingPanorama) return;
-      const deltaX = e.clientX - startDragX;
-      
-      // Calculate smooth scale translation (0.1% backgroundPosition shift per mouse pixel moved)
-      let offsetPercent = deltaX * 0.1;
-      currentBgPosPercent = startBgPosPercent - offsetPercent;
-
-      // Bound between 0 and 100 for panorama continuity
-      if (currentBgPosPercent < 0) currentBgPosPercent = 100;
-      if (currentBgPosPercent > 100) currentBgPosPercent = 0;
-
-      detailPanoramaViewport.style.backgroundPositionX = `${currentBgPosPercent}%`;
-    });
-
-    document.addEventListener('mouseup', () => {
-      isDraggingPanorama = false;
-    });
-  }
-
-  window.closeCardDetails = function () {
-    detailModal.querySelector('.relative').classList.add('scale-95');
-    detailModal.querySelector('.relative').classList.remove('scale-100');
-    setTimeout(() => {
-      detailModal.classList.add('hidden');
-      detailModal.classList.remove('flex');
-    }, 200);
-  };
-
-  if (closeDetailBtn) closeDetailBtn.addEventListener('click', closeCardDetails);
-  if (detailCloseActionBtn) detailCloseActionBtn.addEventListener('click', closeCardDetails);
-  if (detailBackdrop) detailBackdrop.addEventListener('click', closeCardDetails);
-
-  if (detailBookActionBtn) {
-    detailBookActionBtn.addEventListener('click', () => {
-      closeCardDetails();
-      setTimeout(() => {
-        openBookingModal(activeModalOffering);
-      }, 250);
-    });
-  }
-
-
-  // ==========================================
-  // 24. MASTER INITIALIZATION
-  // ==========================================
-  updateAdminStats();
-  renderBookingsTable();
-
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-  var s = document.createElement('script');
-  s.src = 'enhancements.js';
-  document.body.appendChild(s);
-});
+      isDraggingPan
