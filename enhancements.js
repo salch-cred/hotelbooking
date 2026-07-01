@@ -266,3 +266,135 @@
   } catch (e) {}
 
 })();
+
+(function () {
+  'use strict';
+
+  // 13. Wire up the curtain-reveal photo effect. Elements bearing
+  // .curtain-reveal or .curtain-reveal-card are styled in CSS to stay
+  // covered until a "revealed" class is added, but nothing was previously
+  // triggering that class -- this observes them (including ones rendered
+  // dynamically later) and reveals each as it scrolls into view, with a
+  // hard timeout safety net so a photo can never stay hidden behind a
+  // plain covered panel indefinitely.
+  try {
+    function revealCurtain(el) { el.classList.add('revealed'); }
+
+    function observeCurtains(io) {
+      document.querySelectorAll('.curtain-reveal, .curtain-reveal-card').forEach(function (el) {
+        if (!el.dataset.curtainObserved) {
+          el.dataset.curtainObserved = '1';
+          io.observe(el);
+        }
+      });
+    }
+
+    if ('IntersectionObserver' in window) {
+      var curtainIO = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            revealCurtain(entry.target);
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+
+      observeCurtains(curtainIO);
+      var curtainMo = new MutationObserver(function () { observeCurtains(curtainIO); });
+      curtainMo.observe(document.body, { childList: true, subtree: true });
+    } else {
+      document.querySelectorAll('.curtain-reveal, .curtain-reveal-card').forEach(revealCurtain);
+    }
+
+    setTimeout(function () {
+      document.querySelectorAll('.curtain-reveal, .curtain-reveal-card').forEach(revealCurtain);
+    }, 1800);
+  } catch (e) {}
+
+  // 14. Repair any photo that is already broken (loaded with zero natural
+  // size) even if no error event ever fired for it.
+  try {
+    function repairBrokenImages() {
+      document.querySelectorAll('img').forEach(function (img) {
+        if (img.complete && img.naturalWidth === 0 && img.src.indexOf('data:image/svg+xml') !== 0 && !img.dataset.repaired) {
+          img.dataset.repaired = '1';
+          img.dispatchEvent(new Event('error'));
+        }
+      });
+    }
+    setTimeout(repairBrokenImages, 1200);
+    setTimeout(repairBrokenImages, 3000);
+  } catch (e) {}
+
+  // 15. Auto-close the mobile drawer whenever a nav link inside it is
+  // tapped, so navigation always lands smoothly on the section instead of
+  // leaving the drawer open over the content.
+  try {
+    var mobileDrawerEl = document.getElementById('mobile-drawer');
+    if (mobileDrawerEl) {
+      mobileDrawerEl.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        a.addEventListener('click', function () {
+          if (typeof window.closeMobileDrawer === 'function') {
+            setTimeout(window.closeMobileDrawer, 150);
+          }
+        });
+      });
+    }
+  } catch (e) {}
+
+  // 16. Slim scroll-progress indicator for clearer wayfinding on the long
+  // client-facing page.
+  try {
+    var progressBar = document.createElement('div');
+    progressBar.id = 'scroll-progress';
+    document.body.appendChild(progressBar);
+    function syncScrollProgress() {
+      var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+      progressBar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', syncScrollProgress, { passive: true });
+    window.addEventListener('resize', syncScrollProgress);
+    syncScrollProgress();
+  } catch (e) {}
+
+  // 17. Booking-flow polish: guest count clamping, inline email validation
+  // feedback, and a friendly confirmation toast once a request is sent.
+  try {
+    var guestsInput = document.getElementById('booking-guests');
+    if (guestsInput) {
+      guestsInput.addEventListener('input', function () {
+        var v = parseInt(guestsInput.value, 10);
+        if (!isNaN(v) && v < 1) guestsInput.value = 1;
+        if (!isNaN(v) && v > 20) guestsInput.value = 20;
+      });
+    }
+
+    var emailInput = document.getElementById('booking-email');
+    function isValidBookingEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    if (emailInput) {
+      emailInput.addEventListener('blur', function () {
+        var valid = emailInput.value === '' || isValidBookingEmail(emailInput.value);
+        emailInput.style.borderColor = valid ? '' : '#E15B5B';
+      });
+      emailInput.addEventListener('input', function () {
+        if (emailInput.style.borderColor) emailInput.style.borderColor = '';
+      });
+    }
+
+    document.addEventListener('submit', function (e) {
+      if (e.target && e.target.id === 'booking-form') {
+        var toast = document.createElement('div');
+        toast.textContent = 'Reservation request received \u2014 we will confirm shortly.';
+        toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1A1A1A;color:#fff;padding:14px 28px;border-radius:999px;font-size:13px;letter-spacing:0.03em;z-index:9999;box-shadow:0 15px 35px -10px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.4s ease;';
+        document.body.appendChild(toast);
+        requestAnimationFrame(function () { toast.style.opacity = '1'; });
+        setTimeout(function () {
+          toast.style.opacity = '0';
+          setTimeout(function () { toast.remove(); }, 400);
+        }, 3600);
+      }
+    }, true);
+  } catch (e) {}
+
+})();
