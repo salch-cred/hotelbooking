@@ -1507,4 +1507,65 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (detailPanoramaViewport) {
     detailPanoramaViewport.addEventListener('mousedown', (e) => {
-      isDraggingPan
+      isDraggingPanorama = true;
+      startDragX = e.clientX;
+      startBgPosPercent = currentBgPosPercent;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDraggingPanorama) return;
+      const deltaX = e.clientX - startDragX;
+      
+      // Calculate smooth scale translation (0.1% backgroundPosition shift per mouse pixel moved)
+      let offsetPercent = deltaX * 0.1;
+      currentBgPosPercent = startBgPosPercent - offsetPercent;
+
+      // Bound between 0 and 100 for panorama continuity
+      if (currentBgPosPercent < 0) currentBgPosPercent = 100;
+      if (currentBgPosPercent > 100) currentBgPosPercent = 0;
+
+      detailPanoramaViewport.style.backgroundPositionX = `${currentBgPosPercent}%`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDraggingPanorama = false;
+    });
+  }
+
+  window.closeCardDetails = function () {
+    detailModal.querySelector('.relative').classList.add('scale-95');
+    detailModal.querySelector('.relative').classList.remove('scale-100');
+    document.body.classList.remove('overlay-open');
+    setTimeout(() => {
+      detailModal.classList.add('hidden');
+      detailModal.classList.remove('flex');
+    }, 200);
+  };
+
+  if (closeDetailBtn) closeDetailBtn.addEventListener('click', closeCardDetails);
+  if (detailCloseActionBtn) detailCloseActionBtn.addEventListener('click', closeCardDetails);
+  if (detailBackdrop) detailBackdrop.addEventListener('click', closeCardDetails);
+
+  if (detailBookActionBtn) {
+    detailBookActionBtn.addEventListener('click', () => {
+      closeCardDetails();
+      setTimeout(() => {
+        openBookingModal(activeModalOffering);
+      }, 250);
+    });
+  }
+
+
+  // ==========================================
+  // 24. MASTER INITIALIZATION
+  // ==========================================
+  updateAdminStats();
+  renderBookingsTable();
+
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  var s = document.createElement('script');
+  s.src = 'enhancements.js';
+  document.body.appendChild(s);
+});
