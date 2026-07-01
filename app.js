@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
     "The Epicurean Atrium": 195
   };
 
+  // Approximate USD -> INR conversion for displaying dual currency pricing
+  const USD_TO_INR_RATE = 83;
+  function formatDualPrice(usdAmount) {
+    const inrAmount = Math.round(usdAmount * USD_TO_INR_RATE);
+    return `$${usdAmount.toLocaleString('en-US')} (\u20b9${inrAmount.toLocaleString('en-IN')})`;
+  }
+
   const initialSeedBookings = [
     { id: "CRT-58190-Q", name: "Lord Hamilton", email: "hamilton@estate.co.uk", experience: "The Ocean Sanctuary", date: "2026-07-02", time: "06:30 PM", guests: "2", status: "Confirmed" },
     { id: "CRT-19204-Y", name: "Lady Beatrice", email: "beatrice@castle.net", experience: "The Emerald Chamber", date: "2026-07-04", time: "02:00 PM", guests: "1", status: "Pending" },
@@ -57,8 +64,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Trigger first image's curtain swipe on load completion
         const heroCurtain = document.getElementById('hero-curtain');
         if (heroCurtain) heroCurtain.classList.add('revealed');
-      }, 700);
-    }, 1700);
+      }, 400);
+    }, 900);
   }
 
 
@@ -291,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     planSummaryLabel.innerText = labelParts.join(" + ");
-    planSummaryPrice.innerText = `Est. Investment: $${totalEst} / Night`;
+    planSummaryPrice.innerText = `Est. Investment: ${formatDualPrice(totalEst)} / Night`;
   };
 
   updatePlannerSummary();
@@ -617,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const occupancyPercentage = Math.round((confirmedCount / 15) * 100);
 
-    document.getElementById('metric-revenue').innerText = `$${totalRevenue.toLocaleString()}`;
+    document.getElementById('metric-revenue').innerText = formatDualPrice(totalRevenue);
     document.getElementById('metric-total').innerText = totalActive;
     document.getElementById('metric-completed-count').innerText = completedCount;
     document.getElementById('metric-pending').innerText = pendingCount;
@@ -1122,7 +1129,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('review-experience').innerText = suiteVal;
     document.getElementById('review-datetime').innerText = `${dateVal} at ${timeVal}`;
     document.getElementById('review-guests').innerText = `${guestsVal} ${guestsVal == 1 ? 'Guest' : 'Guests'}`;
-    document.getElementById('review-total-price').innerText = `$${totalEst.toLocaleString()}`;
+    document.getElementById('review-total-price').innerText = formatDualPrice(totalEst);
   }
 
   // Next Nav triggers
@@ -1224,299 +1231,3 @@ document.addEventListener('DOMContentLoaded', function () {
       setTimeout(() => {
         if (mobileDrawer.classList.contains('translate-x-full')) {
           mobileDrawer.classList.add('hidden');
-        }
-      }, 500);
-    }
-  };
-
-  if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener('click', () => {
-      if (mobileDrawer) {
-        mobileDrawer.classList.remove('hidden');
-        setTimeout(() => {
-          mobileDrawer.classList.remove('translate-x-full');
-        }, 10);
-      }
-    });
-  }
-  if (closeDrawerBtn) {
-    closeDrawerBtn.addEventListener('click', closeMobileDrawer);
-  }
-
-  const tabImage = document.getElementById('tab-image');
-  const tabData = {
-    tasting: {
-      image: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600&auto=format&fit=crop',
-      btnId: 'tab-btn-tasting',
-      contentId: 'tab-content-tasting'
-    },
-    vintages: {
-      image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=600&auto=format&fit=crop',
-      btnId: 'tab-btn-vintages',
-      contentId: 'tab-content-vintages'
-    },
-    wellness: {
-      image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=600&auto=format&fit=crop',
-      btnId: 'tab-btn-wellness',
-      contentId: 'tab-content-wellness'
-    }
-  };
-
-  window.switchTab = function (tabKey) {
-    Object.keys(tabData).forEach(key => {
-      const data = tabData[key];
-      const btn = document.getElementById(data.btnId);
-      const content = document.getElementById(data.contentId);
-      
-      content.classList.add('hidden');
-      content.classList.remove('block');
-      btn.classList.add('border-transparent', 'text-ivory-muted', 'dark:text-evening-muted');
-      btn.classList.remove('border-ivory-gold', 'dark:border-evening-gold', 'text-ivory-dark', 'dark:text-evening-text');
-    });
-
-    const active = tabData[tabKey];
-    const activeBtn = document.getElementById(active.btnId);
-    const activeContent = document.getElementById(active.contentId);
-
-    activeContent.classList.remove('hidden');
-    activeContent.classList.add('block');
-    activeBtn.classList.remove('border-transparent', 'text-ivory-muted', 'dark:text-evening-muted');
-    activeBtn.classList.add('border-ivory-gold', 'dark:border-evening-gold', 'text-ivory-dark', 'dark:text-evening-text');
-
-    tabImage.style.opacity = '0.3';
-    setTimeout(() => {
-      tabImage.src = active.image;
-      tabImage.style.opacity = '1';
-    }, 200);
-  };
-
-
-  // ==========================================
-  // 22. CLIENT DRAWER SLIDES & MODALS
-  // ==========================================
-  const bookingExperienceSelect = document.getElementById('booking-experience');
-  const closeBookingBtn = document.getElementById('close-booking-btn');
-  const bookingBackdrop = document.getElementById('booking-backdrop');
-
-  window.openBookingModal = function (prefilledExperience = '') {
-    if (prefilledExperience) {
-      bookingExperienceSelect.value = prefilledExperience;
-    }
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('booking-date').value = tomorrow.toISOString().split('T')[0];
-
-    clientBookingDrawer.classList.remove('hidden');
-    setTimeout(() => {
-      clientBookingDrawer.querySelector('.relative').classList.remove('translate-x-full');
-    }, 10);
-  };
-
-  window.closeBookingModal = function () {
-    clientBookingDrawer.querySelector('.relative').classList.add('translate-x-full');
-    setTimeout(() => {
-      clientBookingDrawer.classList.add('hidden');
-    }, 300);
-  };
-
-  if (closeBookingBtn) closeBookingBtn.addEventListener('click', closeBookingModal);
-  if (bookingBackdrop) bookingBackdrop.addEventListener('click', closeBookingModal);
-
-  const closeSuccessBtn = document.getElementById('close-success-btn');
-  if (closeSuccessBtn) {
-    closeSuccessBtn.addEventListener('click', () => {
-      clientSuccessModal.classList.add('hidden');
-      clientSuccessModal.classList.remove('flex');
-    });
-  }
-
-
-  // ==========================================
-  // 23. ROOM DETAIL MODAL & INTERACTIVE 360 PANORAMA
-  // ==========================================
-  const detailModal = document.getElementById('detail-modal');
-  const detailBackdrop = document.getElementById('detail-backdrop');
-  const closeDetailBtn = document.getElementById('close-detail-btn');
-  const detailCloseActionBtn = document.getElementById('detail-close-action-btn');
-  const detailBookActionBtn = document.getElementById('detail-book-action-btn');
-
-  const detailImage = document.getElementById('detail-image');
-  const detailPanoramaViewport = document.getElementById('detail-panorama-viewport');
-  const btnViewOverview = document.getElementById('btn-modal-view-overview');
-  const btnViewPanorama = document.getElementById('btn-modal-view-panorama');
-
-  const detailCategory = document.getElementById('detail-category');
-  const detailTitle = document.getElementById('detail-title');
-  const detailDesc = document.getElementById('detail-desc');
-  const detailFeat1 = document.getElementById('detail-feat1');
-  const detailFeat2 = document.getElementById('detail-feat2');
-  const detailFeat3 = document.getElementById('detail-feat3');
-  const detailFeat4 = document.getElementById('detail-feat4');
-  const detailRate = document.getElementById('detail-rate');
-
-  const cardData = {
-    gastronomy: {
-      title: 'The Ocean Observatory',
-      category: 'Scenic Sanctuary Escape',
-      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600&auto=format&fit=crop',
-      panorama: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600&auto=format&fit=crop', // Wide panorama scene
-      desc: 'Perched over crushing coastal cliffs. Includes custom floor heating networks, deep infinity hot tubs fed by nearby thermal vents, and continuous professional dining/butler service for your absolute retreat.',
-      feat1: 'Volcanic mineral infinity pool',
-      feat2: 'Oceanic cliffside view deck',
-      feat3: 'Personal butler-led culinary service',
-      feat4: 'Linen and sateen lounge sets',
-      rate: '$650 / night'
-    },
-    spa: {
-      title: 'The Emerald Chamber',
-      category: 'Somatic Health Suite',
-      image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=600&auto=format&fit=crop',
-      panorama: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1600&auto=format&fit=crop',
-      desc: 'A therapeutic cocoon. Surrounded by forest aromas and private eucalyptus steam chambers. Included with your journey are sound therapists, hand-pressed herb oils, and volcanic stone hot massages.',
-      feat1: 'Organic pine aromatherapy vapor',
-      feat2: 'Deep mineral hot spring bath',
-      feat3: 'Crystal bowl audio resonance',
-      feat4: 'Personal sound wellness guides',
-      rate: '$220 / session'
-    },
-    sanctuary: {
-      title: 'The Epicurean Atrium',
-      category: 'Private Culinary Suite',
-      image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop',
-      panorama: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?q=80&w=1600&auto=format&fit=crop',
-      desc: 'Bespoke gastronomy design. Dine beneath modern glass art structures as our chef de cuisine plates multi-course organic tasting cards paired with aged amphora amber wines and hand-pressed botanical liquors.',
-      feat1: 'Private gastronomy-driven table',
-      feat2: 'Multi-course organic dining menu',
-      feat3: 'Hand-blown glass light structure',
-      feat4: 'Clay terracotta amphora cellar flight',
-      rate: '$195 / guest'
-    }
-  };
-
-  let activeModalOffering = '';
-  let activeModalPanImage = '';
-
-  window.openCardDetails = function (cardKey, autoView = 'overview') {
-    const data = cardData[cardKey];
-    if (!data) return;
-
-    activeModalOffering = data.title;
-    activeModalPanImage = data.panorama;
-
-    // Standard fields populate
-    detailImage.src = data.image;
-    detailPanoramaViewport.style.backgroundImage = `url('${data.panorama}')`;
-
-    detailCategory.innerText = data.category;
-    detailTitle.innerText = data.title;
-    detailDesc.innerText = data.desc;
-    detailFeat1.innerText = data.feat1;
-    detailFeat2.innerText = data.feat2;
-    detailFeat3.innerText = data.feat3;
-    detailFeat4.innerText = data.feat4;
-    detailRate.innerText = data.rate;
-
-    // Display view setup
-    switchRoomModalView(autoView);
-
-    detailModal.classList.remove('hidden');
-    detailModal.classList.add('flex');
-    setTimeout(() => {
-      detailModal.querySelector('.relative').classList.remove('scale-95');
-      detailModal.querySelector('.relative').classList.add('scale-100');
-    }, 10);
-  };
-
-  window.switchRoomModalView = function(viewMode) {
-    if (viewMode === 'panorama') {
-      detailImage.classList.add('hidden');
-      detailImage.classList.remove('block');
-      detailPanoramaViewport.classList.remove('hidden');
-      detailPanoramaViewport.classList.add('block');
-
-      // Styles buttons
-      btnViewPanorama.className = "px-3.5 py-1.5 rounded-full font-bold bg-white text-ivory-dark cursor-pointer transition-colors";
-      btnViewOverview.className = "px-3.5 py-1.5 rounded-full text-white hover:text-ivory-gold cursor-pointer transition-colors";
-      
-      // Seed centered panoramic alignment
-      detailPanoramaViewport.style.backgroundPositionX = "50%";
-    } else {
-      detailPanoramaViewport.classList.add('hidden');
-      detailPanoramaViewport.classList.remove('block');
-      detailImage.classList.remove('hidden');
-      detailImage.classList.add('block');
-
-      btnViewOverview.className = "px-3.5 py-1.5 rounded-full font-bold bg-white text-ivory-dark cursor-pointer transition-colors";
-      btnViewPanorama.className = "px-3.5 py-1.5 rounded-full text-white hover:text-ivory-gold cursor-pointer transition-colors";
-    }
-  };
-
-  // Draggable 360 Momentum Panoramic calculations
-  let isDraggingPanorama = false;
-  let startDragX = 0;
-  let startBgPosPercent = 50;
-  let currentBgPosPercent = 50;
-
-  if (detailPanoramaViewport) {
-    detailPanoramaViewport.addEventListener('mousedown', (e) => {
-      isDraggingPanorama = true;
-      startDragX = e.clientX;
-      startBgPosPercent = currentBgPosPercent;
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isDraggingPanorama) return;
-      const deltaX = e.clientX - startDragX;
-      
-      // Calculate smooth scale translation (0.1% backgroundPosition shift per mouse pixel moved)
-      let offsetPercent = deltaX * 0.1;
-      currentBgPosPercent = startBgPosPercent - offsetPercent;
-
-      // Bound between 0 and 100 for panorama continuity
-      if (currentBgPosPercent < 0) currentBgPosPercent = 100;
-      if (currentBgPosPercent > 100) currentBgPosPercent = 0;
-
-      detailPanoramaViewport.style.backgroundPositionX = `${currentBgPosPercent}%`;
-    });
-
-    document.addEventListener('mouseup', () => {
-      isDraggingPanorama = false;
-    });
-  }
-
-  window.closeCardDetails = function () {
-    detailModal.querySelector('.relative').classList.add('scale-95');
-    detailModal.querySelector('.relative').classList.remove('scale-100');
-    setTimeout(() => {
-      detailModal.classList.add('hidden');
-      detailModal.classList.remove('flex');
-    }, 200);
-  };
-
-  if (closeDetailBtn) closeDetailBtn.addEventListener('click', closeCardDetails);
-  if (detailCloseActionBtn) detailCloseActionBtn.addEventListener('click', closeCardDetails);
-  if (detailBackdrop) detailBackdrop.addEventListener('click', closeCardDetails);
-
-  if (detailBookActionBtn) {
-    detailBookActionBtn.addEventListener('click', () => {
-      closeCardDetails();
-      setTimeout(() => {
-        openBookingModal(activeModalOffering);
-      }, 250);
-    });
-  }
-
-
-  // ==========================================
-  // 24. MASTER INITIALIZATION
-  // ==========================================
-  updateAdminStats();
-  renderBookingsTable();
-
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-  var s = document.createElement('script');
-  s.src = 'enhancements.js';
-  document.body.appendChild(s);
-});
