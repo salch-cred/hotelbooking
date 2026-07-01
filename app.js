@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const contentBox = archTabContents[key];
 
       if (key === activeKey) {
-        headerBtn.className = "pb-3 text-[10px] tracking-widest uppercase font-medium text-ivory-dark dark:tex t-white border-b-2 border-ivory-gold px-4 transition-all cursor-pointer";
+        headerBtn.className = "pb-3 text-[10px] tracking-widest uppercase font-medium text-ivory-dark dark:text-white border-b-2 border-ivory-gold px-4 transition-all cursor-pointer";
         contentBox.classList.remove('hidden');
         contentBox.classList.add('block');
       } else {
@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function () {
     wizardStep = 0;
     conciergeText.innerText = `"Welcome to Cartinus. I am your digital steward. May I assist in curating your ideal sanctuary stay?"`;
     conciergeOptions.innerHTML = `
-      <button onclick="startConciergeWizard()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-g old text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md">
+      <button onclick="startConciergeWizard()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-gold text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md">
         Curate My Stay &rarr;
       </button>
     `;
@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function () {
     conciergeText.innerText = `"Your curated package is ready. Ocean Suite + ${conciergeChosenDining} + Geothermal Bath. Shall we secure this in the ledger?"`;
     conciergeOptions.innerHTML = `
       <button onclick="triggerConciergeCompletion()" class="w-full py-2.5 rounded-full bg-ivory-dark hover:bg-ivory-gold text-white text-[10px] tracking-widest uppercase transition-all font-light cursor-pointer shadow-md btn-gold-sweep">Secure Ledger Reservation</button>
-      <button onclick=" resetConciergeDialog()" class="w-full py-1.5 text-[9px] uppercase tracking-widest font-light text-rose-400 hover:underline cursor-pointer">Restart Curation</button>
+      <button onclick="resetConciergeDialog()" class="w-full py-1.5 text-[9px] uppercase tracking-widest font-light text-rose-400 hover:underline cursor-pointer">Restart Curation</button>
     `;
     hookCursorMicroInteractions();
   };
@@ -888,8 +888,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
- 
-     link.setAttribute("href", url);
+
+      link.setAttribute("href", url);
       link.setAttribute("download", "cartinus_master_ledger.csv");
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
@@ -1210,7 +1210,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
-  // ======================================== ====
+  // ==========================================
   // 21. CLIENT INTERACTIVE SCROLL & TABS
   // ==========================================
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -1281,7 +1281,7 @@ document.addEventListener('DOMContentLoaded', function () {
     activeContent.classList.remove('hidden');
     activeContent.classList.add('block');
     activeBtn.classList.remove('border-transparent', 'text-ivory-muted', 'dark:text-evening-muted');
-    activeBtn.add('border-ivory-gold', 'dark:border-evening-gold', 'text-ivory-dark', 'dark:text-evening-text');
+    activeBtn.classList.add('border-ivory-gold', 'dark:border-evening-gold', 'text-ivory-dark', 'dark:text-evening-text');
 
     tabImage.style.opacity = '0.3';
     setTimeout(() => {
@@ -1319,7 +1319,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 300);
   };
 
-  if (close BookingBtn) closeBookingBtn.addEventListener('click', closeBookingModal);
+  if (closeBookingBtn) closeBookingBtn.addEventListener('click', closeBookingModal);
   if (bookingBackdrop) bookingBackdrop.addEventListener('click', closeBookingModal);
 
   const closeSuccessBtn = document.getElementById('close-success-btn');
